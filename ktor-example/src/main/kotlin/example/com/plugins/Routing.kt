@@ -17,8 +17,8 @@ fun Application.configureRouting() {
         route("/jobs") {
             get {
                 // get all jobs
-//                val jobs = JobsRepository.allJobs()
-//                call.respond(jobs)
+                val jobs = JobRepository.allJobs()
+                call.respond(jobs)
             }
 
             get("/recent") {
