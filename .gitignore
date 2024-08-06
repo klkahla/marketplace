@@ -22,3 +22,27 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+ktor-example/.DS_Store
+
+ktor-example/src/.DS_Store
+
+ktor-example/src/main/.DS_Store
+
+ktor-example/src/main/kotlin/.DS_Store
+
+ktor-example/src/test/.DS_Store
+
+ktor-example/src/test/kotlin/.DS_Store
+
+marketplace-service/.DS_Store
+
+marketplace-service/src/.DS_Store
+
+marketplace-service/src/main/.DS_Store
+
+marketplace-service/src/main/kotlin/.DS_Store
+
+marketplace-service/src/test/.DS_Store
+
+marketplace-service/src/test/kotlin/.DS_Store
