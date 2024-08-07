@@ -16,7 +16,7 @@ export default function JobCard( {job} ) {
                 {job.description}
                 </Typography>
                 <Typography variant="body2">
-                Steps: {job.requirements}
+                Requirements: {job.requirements}
                 </Typography>
                 <Typography variant="body2">
                 Date: {job.createdAt}
