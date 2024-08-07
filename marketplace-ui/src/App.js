@@ -1,11 +1,11 @@
 import React from 'react';
 import logo from './logo.svg';
-import JobTable from './components/jobTable'
+import JobLayout from './components/JobLayout'
 import './App.css';
 
 function App() {
   return (
-      <JobTable></JobTable>
+      <JobLayout></JobLayout>
   );
 }
 
