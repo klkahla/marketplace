@@ -4,22 +4,29 @@ import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
+import { format } from 'date-fns';
 
 export default function JobCard( {job} ) {
+    const formatDate = (dateString, showTime) => {
+        const formatString = showTime ? 'EEE, MMMM do, yyyy @ h:mma' : 'MM/dd/yyyy'
+        const date = new Date(dateString);
+        return format(date, formatString);
+    };
+
     return (
         <Card sx={{ minWidth: 275, marginBottom: 2 }}>
             <CardContent>
                 <Typography variant="h5" component="div">
-                {job.title}
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
                 {job.description}
                 </Typography>
-                <Typography variant="body2">
+                <Typography sx={{ mb: 1.5 }} color="text.secondary">
                 Requirements: {job.requirements}
                 </Typography>
                 <Typography variant="body2">
-                Date: {job.createdAt}
+                Job Date: {formatDate(job.jobDateTime, true)}
+                </Typography>
+                <Typography variant="body2">
+                Created: {formatDate(job.createdAt, false)}
                 </Typography>
             </CardContent>
             <CardActions>

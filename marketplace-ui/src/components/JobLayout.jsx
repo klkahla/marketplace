@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { fetchJobs, fetchRecentJobs } from "../api/api";
+import { fetchActiveJobs, fetchRecentJobs } from "../api/api";
 import JobCard from './JobCard';
 import Grid from '@mui/material/Grid';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -10,7 +10,7 @@ import Button from '@mui/material/Button';
 
 const getJobs = async (setJobs, jobFiltering) => {
   try {
-    const jobs = jobFiltering === 'recent' ? await fetchRecentJobs() : await fetchJobs();
+    const jobs = jobFiltering === 'recent' ? await fetchRecentJobs() : await fetchActiveJobs();
     setJobs(jobs); // Store the fetched jobs in state
   } catch (error) {
     console.log(error);
@@ -42,8 +42,8 @@ export default function JobLayout() {
           onChange={handleJobFilterChange}
           aria-label="choose between seeing recent jobs or all active jobs"
         >
-          <ToggleButton value="recent" aria-label="recent jobs">Recent Jobs</ToggleButton>
-          <ToggleButton value="active" aria-label="active jobs">Active Jobs</ToggleButton>
+          <ToggleButton value="recent" aria-label="recently posted jobs">Recent Jobs</ToggleButton>
+          <ToggleButton value="active" aria-label="all active jobs">Active Jobs</ToggleButton>
         </ToggleButtonGroup>
       </Grid>
       <Grid item xs={12} sm={3} container justifyContent="flex-end">

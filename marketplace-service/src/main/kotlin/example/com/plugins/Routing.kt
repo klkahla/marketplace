@@ -26,7 +26,8 @@ fun Application.configureRouting() {
                 call.respond(recentJobs)
             }
             get("/active") {
-                // call.response(activeJobs)
+                val activeJobs = JobRepository.getActiveJobs()
+                 call.respond(activeJobs)
             }
 
             post {
