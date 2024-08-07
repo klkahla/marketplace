@@ -8,5 +8,5 @@ data class Job(
     val name: String,
     val description: String,
     val requirements: String,
-//    val closeDateTime: LocalDateTime,
+    val createdAt: String,
 )
