@@ -37,4 +37,5 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     testImplementation("com.jayway.jsonpath:json-path:2.9.0")
+    testImplementation("io.ktor:ktor-client-mock:$ktor_version")
 }
