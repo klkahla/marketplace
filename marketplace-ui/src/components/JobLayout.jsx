@@ -2,11 +2,8 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { fetchActiveJobs, fetchRecentJobs } from "../api/api";
 import JobCard from './JobCard';
-import Grid from '@mui/material/Grid';
-import ToggleButton from '@mui/material/ToggleButton';
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import Button from '@mui/material/Button';
-
+import JobForm from './JobForm';
+import { Button, Grid, Drawer, ToggleButton, ToggleButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 const getJobs = async (setJobs, jobFiltering) => {
   try {
@@ -20,6 +17,9 @@ const getJobs = async (setJobs, jobFiltering) => {
 export default function JobLayout() {
   const [jobs, setJobs] = useState([]);
   const [jobFilter, setJobFilter] = useState('recent');
+  const [open, setOpen] = useState(false);
+  const [isFormDirty, setIsFormDirty] = useState(false);
+  const [openWarning, setOpenWarning] = useState(false);
 
   useEffect(() => {
     getJobs(setJobs, jobFilter); // Fetch jobs when the component mounts or jobType changes
@@ -30,6 +30,30 @@ export default function JobLayout() {
       setJobFilter(newJobFilter);
     }
   };
+
+  const toggleDrawer = (isOpen) => () => {
+    if (isFormDirty && !isOpen) {
+      setOpenWarning(true);
+    } else {
+      setOpen(isOpen);
+    }
+  };
+
+  const handleSave = (newJob) => {
+    // TODO: Transform to API call and cause refresh of UI
+    setJobs((prevJobs) => [...prevJobs, newJob]);
+    setOpen(false);
+    setIsFormDirty(false);
+  };
+
+  const handleWarningClose = (shouldClose) => {
+    setOpenWarning(false);
+    if (shouldClose) {
+      setOpen(false);
+      setIsFormDirty(false);
+    }
+  };
+
 
   return (
     <>
@@ -47,9 +71,16 @@ export default function JobLayout() {
         </ToggleButtonGroup>
       </Grid>
       <Grid item xs={12} sm={3} container justifyContent="flex-end">
-        <Button variant="contained" color="primary">
+        <Button variant="contained" color="primary" onClick={toggleDrawer(true)}>
           Add New Job
         </Button>
+        <Drawer open={open} anchor="right" onClose={toggleDrawer(false)}>
+          <JobForm
+            onSave={handleSave}
+            onCancel={toggleDrawer(false)}
+            setIsFormDirty={setIsFormDirty}
+          />
+        </Drawer>
       </Grid>
     </Grid>
     <Grid container spacing={2} justifyContent="center">
@@ -59,6 +90,28 @@ export default function JobLayout() {
         </Grid>
       ))}
     </Grid>
+
+    <Dialog
+      open={openWarning}
+      onClose={() => handleWarningClose(false)}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Discard changes?"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          You have unsaved changes. Are you sure you want to discard them and close the drawer?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => handleWarningClose(false)} color="primary">
+          No
+        </Button>
+        <Button onClick={() => handleWarningClose(true)} color="primary" autoFocus>
+          Yes
+        </Button>
+      </DialogActions>
+    </Dialog>
     </>
   );
 }
