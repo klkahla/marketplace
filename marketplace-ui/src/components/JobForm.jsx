@@ -44,7 +44,12 @@ export default function JobForm({ onSave, onCancel, setIsFormDirty }) {
 
   const handleSave = () => {
     if (validateForm()) {
-      onSave({ ...formState, createdAt: new Date().toISOString() });
+        const formattedJob = {
+            ...formState,
+            jobDateTime: formState.jobDateTime.format('YYYY-MM-DDTHH:mm:ss'), // Format to match backend expectation
+            createdAt: new Date().toISOString().replace('Z', '') // Remove 'Z' for LocalDateTime
+        };
+        onSave(formattedJob);
     }
   };
 

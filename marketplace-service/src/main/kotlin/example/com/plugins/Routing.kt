@@ -31,15 +31,15 @@ fun Application.configureRouting() {
             }
 
             post {
-//                try {
-//                    val job = call.receive<Job>()
-//                    JobRepository.addJob(job)
-//                    call.respond(HttpStatusCode.NoContent)
-//                } catch (ex: IllegalStateException) {
-//                    call.respond(HttpStatusCode.BadRequest)
-//                } catch (ex: JsonConvertException) {
-//                    call.respond(HttpStatusCode.BadRequest)
-//                }
+                try {
+                    val job = call.receive<Job>()
+                    val newJob = JobRepository.addJob(job)
+                    call.respond(newJob)
+                } catch (ex: IllegalStateException) {
+                    call.respond(HttpStatusCode.BadRequest)
+                } catch (ex: JsonConvertException) {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
             }
         }
     }

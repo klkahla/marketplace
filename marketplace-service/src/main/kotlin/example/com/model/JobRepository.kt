@@ -38,4 +38,10 @@ object JobRepository {
             .filter { LocalDateTime.parse(it.jobDateTime, formatter).isAfter(now) }
             .sortedBy { LocalDateTime.parse(it.jobDateTime, formatter) }
     }
+
+    fun addJob(job: Job): Job {
+        // TODO: Validation
+        jobs.add(job)
+        return job
+    }
 }

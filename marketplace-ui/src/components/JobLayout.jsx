@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { fetchActiveJobs, fetchRecentJobs } from "../api/api";
+import { fetchActiveJobs, fetchRecentJobs, createJob } from "../api/api";
 import JobCard from './JobCard';
 import JobForm from './JobForm';
 import { Button, Grid, Drawer, ToggleButton, ToggleButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
@@ -39,11 +39,16 @@ export default function JobLayout() {
     }
   };
 
-  const handleSave = (newJob) => {
-    // TODO: Transform to API call and cause refresh of UI
-    setJobs((prevJobs) => [...prevJobs, newJob]);
-    setOpen(false);
-    setIsFormDirty(false);
+  const handleSave = async (newJob) => {
+    try {
+      console.log("newJob: ", newJob);
+      await createJob(newJob);
+      await getJobs(setJobs, jobFilter);
+      setOpen(false);
+      setIsFormDirty(false);
+    } catch (error) {
+      console.error("Error saving job: ", error);
+    }
   };
 
   const handleWarningClose = (shouldClose) => {
