@@ -3,18 +3,51 @@ import { useState, useEffect } from 'react';
 import { fetchActiveJobs, fetchRecentJobs, createJob } from "../api/api";
 import JobCard from './JobCard';
 import JobForm from './JobForm';
-import { Button, Grid, Drawer, ToggleButton, ToggleButtonGroup, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { 
+  Button, 
+  Grid, 
+  Drawer, 
+  ToggleButton, 
+  ToggleButtonGroup, 
+  Dialog, 
+  DialogActions, 
+  DialogContent, 
+  DialogContentText, 
+  DialogTitle, 
+  CircularProgress 
+} from '@mui/material';
+import { delayHideSpinner } from '../utils/utils';
 
-const getJobs = async (setJobs, jobFiltering) => {
+const getJobs = async (setJobs, jobFiltering, setLoading) => {
+  setLoading(true);
   try {
     const jobs = jobFiltering === 'recent' ? await fetchRecentJobs() : await fetchActiveJobs();
     setJobs(jobs); // Store the fetched jobs in state
   } catch (error) {
     console.log(error);
+  } finally {
+    delayHideSpinner(() => setLoading(false));
   }
 }
 
+const LoadingView = () => (
+  <Grid container justifyContent="center" alignItems="center" style={{ height: '80vh' }}>
+      <CircularProgress />
+  </Grid>
+);
+
+const JobView = ( {jobs} ) => (
+<Grid container spacing={2} justifyContent="center">
+  {jobs.map((job) => (
+    <Grid item xs={12} sm={6} md={4} lg={3} key={job.id}>
+      <JobCard job={job} />
+    </Grid>
+  ))}
+</Grid>
+);
+
 export default function JobLayout() {
+  const [loading, setLoading] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [jobFilter, setJobFilter] = useState('recent');
   const [open, setOpen] = useState(false);
@@ -22,7 +55,7 @@ export default function JobLayout() {
   const [openWarning, setOpenWarning] = useState(false);
 
   useEffect(() => {
-    getJobs(setJobs, jobFilter); // Fetch jobs when the component mounts or jobType changes
+    getJobs(setJobs, jobFilter, setLoading); // Fetch jobs when the component mounts or jobType changes
   }, [jobFilter]);
 
   const handleJobFilterChange = (event, newJobFilter) => {
@@ -40,14 +73,17 @@ export default function JobLayout() {
   };
 
   const handleSave = async (newJob) => {
+    setLoading(true);
     try {
       console.log("newJob: ", newJob);
       await createJob(newJob);
-      await getJobs(setJobs, jobFilter);
+      await getJobs(setJobs, jobFilter, setLoading);
       setOpen(false);
       setIsFormDirty(false);
     } catch (error) {
       console.error("Error saving job: ", error);
+    } finally {
+      delayHideSpinner(() => setLoading(false));
     }
   };
 
@@ -58,7 +94,6 @@ export default function JobLayout() {
       setIsFormDirty(false);
     }
   };
-
 
   return (
     <>
@@ -88,13 +123,9 @@ export default function JobLayout() {
         </Drawer>
       </Grid>
     </Grid>
-    <Grid container spacing={2} justifyContent="center">
-      {jobs.map((job) => (
-        <Grid item xs={12} sm={6} md={4} lg={3} key={job.id}>
-          <JobCard job={job} />
-        </Grid>
-      ))}
-    </Grid>
+    {loading ?
+      <LoadingView /> : <JobView jobs={jobs} />
+    }
 
     <Dialog
       open={openWarning}
